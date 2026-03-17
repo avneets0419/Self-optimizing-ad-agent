@@ -1,1 +1,7 @@
+venv/
 .env
+.streamlit/
+__pycache__/
+*.pyc
+.devcontainer/
+ad_image.jpg
