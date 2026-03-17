@@ -1,6 +1,7 @@
 import os
 from groq import Groq
 from dotenv import load_dotenv
+import re
 
 load_dotenv()
 
@@ -18,17 +19,21 @@ def diagnose(metrics):
     if metrics["Conversion Rate"] < 0.05:
         issues.append("Low conversions - Adjust audience")
 
-    if metrics["ROI"] < 4:
+    if metrics["ROI"] < 10:
         issues.append("Negative ROI - Campaign losing money")
 
     return issues
 
 
 
-def optimize_ad(ad_copy, metrics):
+def optimize_ad(ad_copy, metrics,issues):
 
     prompt = f"""
-    Improve this ad copy.
+
+    
+    You are an experienced and results-driven ads manager. Review and improve the following ad copy to maximize performance, clarity, and conversions. The campaign is currently facing these issues: {','.join(issues)}.
+
+    Ensure the revised copy is engaging, audience-focused, and aligned with best practices for high-performing ads. Strengthen the headline, refine the value proposition, include a compelling call-to-action, and address any gaps contributing to the listed issues. Provide multiple improved variations if possible, along with a brief explanation of the changes made.
 
     Current Ad Copy:
     {ad_copy}
@@ -58,10 +63,12 @@ def optimize_ad(ad_copy, metrics):
 
     response_text = completion.choices[0].message.content
 
-    start = response_text.find("{")
-    end = response_text.rfind("}") + 1
+    match = re.search(r"\{.*?\}", response_text, re.DOTALL)
 
-    json_text = response_text[start:end]
+    if not match:
+        raise ValueError("No valid JSON found in LLM response")
+
+    json_text = match.group()
 
     data = json.loads(json_text)
 
