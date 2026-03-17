@@ -16,14 +16,18 @@ st.title("🚀 Agentic AI Ad Manager")
 st.write("Generate, test, and optimize ad campaigns using AI")
 
 # USER INPUT
-product_description = st.text_input("Enter Product Description", "AI Fitness App")
+product_description = st.text_input(
+    "Enter Product Description *",
+    placeholder="e.g. AI Fitness App (explain how it works, benefits, and target audience)"
+)
 
-uploaded_file = st.file_uploader("Upload Ad Creative Image", type=["jpg", "png"])
+uploaded_file = st.file_uploader("Upload Ad Creative Image (Optional)", type=["jpg", "png"])
+st.caption("For best results, upload an image that represents the product or campaign theme.")
 
 if st.button("Run Campaign"):
 
     if not product_description:
-        st.warning("Please enter a product description")
+        st.error("Please enter a product description")
         st.stop()
 
     image_path = None
